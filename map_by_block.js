@@ -43,20 +43,32 @@ $(document).on("ready", function(){
 
     var clockStarted = false;
     var store_month = 0 
-    for(i = 0; i < num_months; i++){
-        var filename = "../block_jsons/"+months[i]+"_blocks.json";
+    var store_limit = 7;
+    var stored = [];
+
+    var time = new Date("January 1, 2015 00:00:00");
+    var loadDate = new Date("January 1, 2015");
+
+    console.log(loadDate.toLocaleDateString());
+
+    for(i = 0; i < store_limit; i++){
+        var filename = "../day_jsons/"+months[i]+"_blocks.json";
+        /*
         $.getJSON(filename, function(data){
             block_months[store_month] = data;
             store_month ++;
+            console.log(store_month);
             if(!clockStarted){
                 clockStarted = true;
                 $("#text-time").text(formatTimeString());
                 startClock();
             }
         });
+        */
     }
 
-    var time = new Date("January 1, 2015 00:00:00");
+    var latrange = [40.73, 40.71];
+    var lngrange = [-74, -73.8];
 
     //Increments the time by 1 hour
     function nextHour(){
@@ -115,17 +127,26 @@ $(document).on("ready", function(){
         //If needed, update the month
         checkMonth();
 
+        //Delete all circles
+        //deleteCircles();
+
         //For each block, find if the applicable hour exists and, if so, create a circle for it
         var formatted_time = formatTime(time);
+        console.log(formatted_time);
         for(var b in this_month){
-            var block = this_month[b];
-            if(!(formatted_time in block)){
-                continue;
+            var lat = parseFloat(b.split(" ")[0]);
+            var lng = parseFloat(b.split(" ")[1]);
+            if(lat < latrange[0] && lat > latrange[1] && lng > lngrange[0] && lng < lngrange[1]){
+                var block = this_month[b];
+                if(!(formatted_time in block)){
+                    continue;
+                }
+                var block_hour = block[formatted_time];
+                //addCircle(b, block_hour);
             }
-            var block_hour = block[formatted_time];
-            in_this_hour[b] = block_hour;
         }
-        updateCircles();
+
+        window.setTimeout(doHour, hourPeriod);
     }
 
     function showWindow(contentstring, latlng){
@@ -134,7 +155,7 @@ $(document).on("ready", function(){
         infoWindow.open(map);
     }
 
-    function addCircle(b, radius){
+    function addCircle(b, block_hour){
         var latlng = convertBlock(b);
         var cityCircle = new google.maps.Circle({
             strokeColor: "#000000",
@@ -144,22 +165,29 @@ $(document).on("ready", function(){
             fillOpacity: 0.35,
             map: map,
             center: latlng,
-            radius: 0,
+            radius: block_hour["revenue"]/5,
             clickable: true
         });
 
         google.maps.event.addListener(cityCircle, 'click', function(ev){
-            formatInfo(b, in_this_hour[b]);
+            formatInfo(b, block_hour);
         });
 
         circles[b] = cityCircle;
-        changeCircle(b, radius);
     }
 
+    function deleteCircles(){
+        for (var i = 0; i < circles.length; i++) {
+          circles[i].setMap(null);
+        }
+        circles = {};
+    }
+
+/*
     function changeCircle(b, radius){
         var circle = circles[b];
-        circle.setRadius(Math.round(Math.log(radius)));
-        /*
+        circle.setRadius(radius);
+        
         var upordown = circle.getRadius < radius;
         var interval = window.setInterval(function(){
             if(circle.getRadius() != radius){
@@ -172,7 +200,7 @@ $(document).on("ready", function(){
                 interval.clearInterval();
             }
         }, 10);
-        */
+        
         //TODO: Update information
     }
     var count = 0;
@@ -190,12 +218,12 @@ $(document).on("ready", function(){
                 addCircle(b, in_this_hour[b]["revenue"]);
             }
         }
-        window.setTimeout(doHour, hourPeriod);
-        console.log(count);
         $("#text-time").text(formatTimeString());
         $("#date").text(time.toLocaleDateString());
+        window.setTimeout(doHour, hourPeriod);
+        console.log(count);
     }
-
+*/
     function formatInfo(b, info){
         var contentString = "";
         var block = convertBlock(b);
