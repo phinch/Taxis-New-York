@@ -4,11 +4,6 @@ import math
 import csv
 import datetime
 
-#Format of CSV
-"""
-pickup_datetime|dropoff_time|passenger_count|trip_distance|pickup_longitude|pickup_latitude|dropoff_longitude|dropoff_latitude|payment_type|tip_amount|total_amount
-"""
-
 #Initial testing of the visualization shows that loading JSONs for the entire month is extremely prohibitive.
 #To accommodate this, month JSONs are here split into individual days, such that each of 365 JSONs will now have 24 inner JSONs.
 

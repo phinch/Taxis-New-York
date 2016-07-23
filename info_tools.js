@@ -51,8 +51,6 @@ $("document").ready(function(){
 
     var barwidth = $("#speed-bar").width();
 
-    console.log($("#speed-bar").width());
-
     drawClocks();
 
     var tooltip= d3.select("body")
