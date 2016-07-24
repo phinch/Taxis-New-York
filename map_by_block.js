@@ -108,7 +108,7 @@ function convertBlock(b){
 
 function loadDayJSON(){
     date = loadDate.toISOString().split("T")[0];
-    var filename = "../day_jsons/"+date+".json";
+    var filename = "day_jsons/"+date+".json";
     
     $.getJSON(filename, function(data){
         stored.push(data);
