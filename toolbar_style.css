@@ -70,6 +70,28 @@
     }
 }
 
+/* Pause/Play button CSS */
+
+.pauseplay{
+    position: absolute;
+    top: 20px;
+    left: 230px;
+}
+
+.play{
+    display: none;
+    border-radius: 50%;
+}
+
+.pause{
+    display: inline;
+    border-radius: 50%;
+}
+
+.pause:hover, .play:hover{
+    cursor: pointer;
+}
+
 /*Searchbar CSS*/
 
 .searchbar{
@@ -277,6 +299,10 @@ th[scope="col"] span{
 }
 
 /* Navigation CSS*/
+
+hr{
+    color: #dddddd;
+}
 
 .nav{
     margin-left: 15px;

@@ -4,7 +4,7 @@ import math
 import csv
 import datetime
 from astropy import stats
-import numpy
+from scipy import stats as scistats
 
 """{
     "[BLOCK LAT LONG]":
@@ -44,7 +44,6 @@ avg_dists = [];
 dist_list = [];
 avg_pass = [];
 pass_list = [];
-rides = [];
 
 while date.year < 2016:
     today = {}
@@ -73,15 +72,15 @@ while date.year < 2016:
             tip_list.append(float(block["tips"]))
             rev_list.append(float(block["revenue"]))
             pass_list.append(float(block["passengers"]))
-            rides.append(float(block["rides"]))
 
+    break
     date += datetime.timedelta(days=1)
 
+print(scistats.median(rev_list), astropy.stats.mad_std(rev_list))
 with open("../statistics.csv", "w") as f:
     writer = csv.writer(f)
-    writer.writerow(["Statistic", "Revenue", "Tips", "Distance", "Passengers", "Avg Revenue", "Avg Tips", "Avg Distance", "Avg Passengers", "Rides"])
-    writer.writerow(["Median", numpy.median(rev_list), numpy.median(tip_list), numpy.median(dist_list), numpy.median(pass_list), numpy.median(avg_revs), numpy.median(avg_tips), numpy.median(avg_dists), numpy.median(avg_pass), numpy.median(rides)])
-    writer.writerow(["Mean", numpy.mean(rev_list), numpy.mean(tip_list), numpy.mean(dist_list), numpy.mean(pass_list), numpy.mean(avg_revs), numpy.mean(avg_tips), numpy.mean(avg_dists), numpy.mean(avg_pass), numpy.mean(rides)])
-    writer.writerow(["Median Absolute Deviation", stats.mad_std(rev_list), stats.mad_std(tip_list), stats.mad_std(dist_list), stats.mad_std(pass_list), stats.mad_std(avg_revs), stats.mad_std(avg_tips), stats.mad_std(avg_dists), stats.mad_std(avg_pass), stats.mad_std(rides)])
-    writer.writerow(["Standard Deviation", numpy.std(rev_list), numpy.std(tip_list), numpy.std(dist_list), numpy.std(pass_list), numpy.std(avg_revs), numpy.std(avg_tips), numpy.std(avg_dists), numpy.std(avg_pass), numpy.std(rides)])
+    writer.writerow(["Statistic", "Revenue", "Tips", "Distance", "Passengers", "Avg Revenue", "Avg Tips", "Avg Distance", "Avg Passengers"])
+    writer.writerow(["Mean", statistics.mean(rev_list), statistics.mean(tip_list), statistics.mean(dist_list), statistics.mean(pass_list), statistics.mean(avg_revs), statistics.mean(avg_tips), statistics.mean(avg_dists), statistics.mean(avg_pass)])
+    writer.writerow(["Median", statistics.median(rev_list), statistics.median(tip_list), statistics.median(dist_list), statistics.median(pass_list), statistics.median(avg_revs), statistics.median(avg_tips), statistics.median(avg_dists), statistics.median(avg_pass)])
+    writer.writerow(["Standard Deviation", statistics.stdev(rev_list), statistics.stdev(tip_list), statistics.stdev(dist_list), statistics.stdev(pass_list), statistics.stdev(avg_revs), statistics.stdev(avg_tips), statistics.stdev(avg_dists), statistics.stdev(avg_pass)])
 

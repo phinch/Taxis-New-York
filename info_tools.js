@@ -1,5 +1,5 @@
 //This script initializes events for the toolbar on the left side of the page.
-
+//TODO: Pause/play
 function convertTime(num){
     if(num == 0){
         return "12am";
@@ -46,10 +46,23 @@ $("document").ready(function(){
 
     //Create interactive tools
 
+    //Pause/Play
+    $(".pause").on("click", function(){
+        $(".pause").css("display", "none");
+        $(".play").css("display", "inline");
+        clearTimeout(timeout);
+    });
+
+    $(".play").on("click", function(){
+        $(".pause").css("display", "inline");
+        $(".play").css("display", "none");
+        doHour();
+    });
+
     //Speed slider
     var timedrag = false;
 
-    var barwidth = $("#speed-bar").width();
+    barwidth = $("#speed-bar").width();
 
     drawClocks();
 
@@ -57,16 +70,36 @@ $("document").ready(function(){
                     .append("div")
                     .attr("class", "tooltip");
 
-    //$(".slider").draggable({ axis: "x", grid: [ barwidth/8, 0 ], containment: "#speed-bar" });
     $(".slider").draggable({ axis: "x", containment: "#speed-bar" });
+    $(".slider").on("mousedown", function(event){
+        $(document).on("mouseup", function(event){
+            sliderpos = $(".slider").position().left;
+            $(document).off("mouseup");
+        });
+    });
 
     //Date picker
-    $(".datepicker").datepicker({ minDate: new Date("January 1, 2015"), maxDate: new Date("June 30, 2015"), defaultDate: new Date("January 1, 2015")});
+    $(".datepicker").datepicker({ minDate: new Date("January 1, 2015"), maxDate: new Date("June 30, 2015"), defaultDate: new Date("January 1, 2015"),
+        onSelect: function(dateText, inst){
+            clockStarted = false;
+
+            var newdate = dateText.split("/");
+            time = new Date(parseInt(newdate[2]), parseInt(newdate[0])-1, parseInt(newdate[1]), 0, 0, 0);
+            time.setTime(time.getTime() - 60*60*1000);
+            loadDate = new Date(parseInt(newdate[2]), parseInt(newdate[0])-1, parseInt(newdate[1]), 0, 0, 0);
+
+            stored = [];
+            clearTimeout(timeout);
+            for(i = 0; i < store_limit; i++){
+                loadDayJSON();
+            }
+        }});
 
     //Circle changer
     $(".choice").on("click", changeChoice);
 
-
+    //Default value
+    sliderpos = 147;
     /*functions*/
 
     function drawClocks(){
@@ -106,7 +139,7 @@ $("document").ready(function(){
                 .style("fill", "#dddddd")
                 .attr("stroke", "#666666")
                 .attr("on", "true")
-                .attr("class", "pm "+(i+3)+" hour")
+                .attr("class", "pm "+(i+15)+" hour")
                 .on("mousemove", showTooltip)
                 .on("mouseout", hideTooltip)
                 .on("click", toggleHour);
