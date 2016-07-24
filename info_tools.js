@@ -90,9 +90,7 @@ $("document").ready(function(){
 
             stored = [];
             clearTimeout(timeout);
-            for(i = 0; i < store_limit; i++){
-                loadDayJSON();
-            }
+            loadDayJSON();
         }});
 
     //Circle changer
