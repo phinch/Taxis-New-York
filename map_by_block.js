@@ -29,6 +29,11 @@ function initMap() {
     });
     geocoder = new google.maps.Geocoder;
     infoWindow = new google.maps.InfoWindow();
+
+
+    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+            loadDayJSON();
+    });
 }
 //The length of time, in milliseconds, given to one hour
 var hourPeriod = 10000;
@@ -38,8 +43,7 @@ var num_months = 6;
 var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
 
 var clockStarted = false;
-var store_month = 0 
-var store_limit = 7;
+var store_month = 0;
 var stored = [];
 
 var time = new Date("December 31, 2014 23:00:00");
@@ -114,7 +118,6 @@ function loadDayJSON(){
         stored.push(data);
 
         if(!clockStarted){
-
             clockStarted = true;
             $("#text-time").text(formatTimeString());
             startClock();
@@ -134,9 +137,7 @@ function startClock(){
     //TODO: The clock is out of sync with the time. Can we animate it while keeping it in line with lag?
     //$(".minutes-container").css("animation", "rotate "+ hourPeriod/1000 +"s infinite linear");
     //$(".hours-container").css("animation", "rotate "+ hourPeriod*12/1000 +"s infinite linear");
-    google.maps.event.addListenerOnce(map, 'idle', function(){
-        doHour();
-    });
+    doHour();
 }
 
 var in_this_hour = {};
@@ -383,9 +384,3 @@ function formatInfo(b, info){
         showWindow(contentString, block);
     });
 }
-
-$(document).on("ready", function(){
-    for(i = 0; i < store_limit; i++){
-        loadDayJSON();
-    }
-});
