@@ -159,8 +159,11 @@ $("document").ready(function(){
                 text += "am";
             }
         }else{
-            text = starthour+"pm - "+endhour;
-            if(endhour == 12){
+            if(starthour == 12){
+                starthour = 24;
+            }
+            text = (starthour-12)+"pm - "+(endhour-12);
+            if(endhour == 24){
                 text += "am";
             }else{
                 text += "pm";
@@ -177,7 +180,6 @@ $("document").ready(function(){
             tooltip.style("font-weight", "bold");
         }
 
-        console.log(d3.event.pageX + 5);
         tooltip
             .style("left", d3.event.pageX+5+"px")
             .style("top", d3.event.pageY-8+"px")
