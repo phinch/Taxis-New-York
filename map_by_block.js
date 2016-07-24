@@ -221,14 +221,15 @@ var rev_std = 3278.42, tip_std = 2881.8, dist_std = 89357.7, pass_std = 136.44, 
 //To differentiate between blocks, we create some arbitrary number of divisions; each category a degree greater
 
 var rev_ranges = [rev_med, rev_med+rev_mad, rev_med+(Math.pow(rev_mad,1.5))];
-var avg_rev_ranges = [a_rev_med, a_rev_med+a_rev_mad, a_rev_med+(Math.pow(a_rev_mad,1.5))];
+var avg_rev_ranges = [a_rev_med-a_rev_mad, a_rev_med, a_rev_med+a_rev_mad];
 var tip_ranges = [tip_med, tip_med+tip_mad, tip_med+(Math.pow(tip_mad,1.5))];
 var avg_tip_ranges = [a_tip_med, a_tip_med+a_tip_mad, a_tip_med+(Math.pow(a_tip_mad,1.5))];
 var dist_ranges = [dist_med, dist_med+dist_mad, dist_med+(Math.pow(dist_mad,1.5))];
 
 var avg_dist_ranges = [a_dist_med, a_dist_med+a_dist_mad, a_dist_med+(Math.pow(a_dist_mad,1.5))];
 
-var color_ranges = {"revenue": rev_ranges, "tips": tip_ranges, "distance": dist_ranges};
+//var color_ranges = {"revenue": rev_ranges, "tips": tip_ranges, "distance": dist_ranges};
+var color_ranges = {"avg_revenue": avg_rev_ranges, "avg_tips": avg_tip_ranges, "avg_distance": avg_dist_ranges};
 var size_ranges = {"avg_revenue": avg_rev_ranges, "avg_tips": avg_tip_ranges, "avg_distance": avg_dist_ranges};
 
 function getRadius(block){
@@ -244,7 +245,6 @@ function getColor(block){
     var color_range = color_ranges[color_filter];
     if(colorvar < color_range[0]){
         color = colors[0];
-
     }else if(colorvar < color_range[1]){
         color = colors[1];
     }else if(colorvar < color_range[2]){

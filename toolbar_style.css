@@ -284,6 +284,10 @@ th[scope="col"] span{
 
 /* Circle Color CSS */
 
+#data-change{
+    display: none;
+}
+
 .choice{
     color: #dddddd;
     font-size: 14px;
