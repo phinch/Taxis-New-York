@@ -34,6 +34,65 @@ function initMap() {
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
             loadDayJSON();
     });
+
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    var markers = [];
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
 }
 //The length of time, in milliseconds, given to one hour
 var hourPeriod = 10000;
@@ -142,6 +201,7 @@ function startClock(){
 
 var in_this_hour = {};
 var timeout;
+var degrees = 0;
 function doHour(){
     //Move to the next hour
     nextHour(time);
@@ -184,7 +244,8 @@ function doHour(){
     // Could we possibly use events to keep the changes more tightly bound? 
     $("#text-time").text(formatTimeString());
     $("#date").text(time.toLocaleDateString());
-
+    $(".hours").css("transform", "rotate("+degrees+"deg)");
+    degrees = (degrees + 30)%360;
     circles = in_this_hour;
 
     //Set the period until the next update
@@ -373,13 +434,13 @@ function formatInfo(b, info){
 
         contentString += info["rides"];
         if(parseInt(info["rides"]) > 1){
-            contentString += " rides";
+            contentString += " rides<br>";
         }else{
-            contentString += " ride";
+            contentString += " ride<br>";
         }
 
-        contentString += " totaling $"+info["revenue"]+"<br>";
-        contentString += "Rides averaged at " + info["avg_distance"] + " miles";
+        contentString += "Average fare: $"+info["avg_revenue"]+"<br>";
+        contentString += "Average tip: $"+info["avg_tips"]+"<br>";
         
         showWindow(contentString, block);
     });

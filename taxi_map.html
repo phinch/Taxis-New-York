@@ -2,7 +2,7 @@
 <html>
 <head>
 
-    <title>Taxis: New York City, Jan-June 2015</title>
+    <title>Taxis: New York, NY</title>
     <meta charset="utf-8">
     <meta name="author" content="Philip Hinch"> 
 
@@ -16,7 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> <!-- jquery UI -->
     <script src="map_by_block.js"></script>
     <script src="info_tools.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsMLSl5Cdy_cEPbnpNS1zEhkpZPLhf0q4&callback=initMap&libraries=visualization" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsMLSl5Cdy_cEPbnpNS1zEhkpZPLhf0q4&callback=initMap&libraries=visualization,places" defer></script>
 </head>
 
 <body>
@@ -26,9 +26,11 @@
                 <div class="hours-container">
                     <div class="hours"></div>
                 </div>
+<!--
                 <div class="minutes-container">
                     <div class="minutes"></div>
                 </div>
+-->
             </div>
 
             <div id = "text-info">
@@ -43,7 +45,7 @@
         </div>
 
         <div class = "search">
-            <input class = "searchbar" type="text" name="place" value = "Enter a place...">
+            <input class = "searchbar" type="text" name="place" value = "New York, NY" id="pac-input" class="controls" type="text" placeholder="Search Box">
         </div>
 
         <div class = "dropdown-options">
