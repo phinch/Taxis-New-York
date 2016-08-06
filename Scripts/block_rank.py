@@ -35,8 +35,12 @@ JSON Format:
 #For fun, we'll also make a sort based on the total number of rides. 
 #In the first iteration, this makes the most sense in terms of appeal, because outliers dominate revenue.
 block_list = []
+block_dict = {}
+
+total_average_revenue = 0
 
 for block in all_blocks:
+    total_average_revenue += all_blocks[block]['avg_revenue']
     block_list += [(block, all_blocks[block])]
 
 size = len(block_list)
@@ -60,7 +64,7 @@ ride_order = sorted(block_list, key=lambda d: d[1]['ride_count'])
 #   repeat
 
 #We can stop once the list stops changing its order; we might have some threshhold above 0 to account for very close scores
-convergence = 0.01
+convergence = 0.001
 
 old_blocks = []
 new_scores = []
@@ -73,23 +77,26 @@ converged = False
 
 iter_count = 0
 while not converged:
-    old_dict = {}
-    block_score = 0
-    for block in old_blocks:
-        block_score += 1
-        old_dict[block] = block_score
-
+    block_dict = {}
     iter_count += 1
+
+    rank = 1
+    for block in old_blocks:
+        block_dict[block] = rank
+        rank += 1
+
     for block in block_list:
 
         destinations = block[1]['destinations']
+        rides = block[1]['ride_count']
         score = 0
         for dest in destinations:
             try:
-                score += math.sqrt(destinations[dest])*(old_dict[dest]) 
+                score += destinations[dest]*(all_blocks[dest]['avg_revenue']/total_average_revenue)*(block_dict[dest]/size)
             except KeyError: #Not all pickup blocks are destinations; these cases are discounted as completely unappealing
                 continue
         
+        score *= block_dict[block[0]]/size
         new_scores.append((block[0], score))
     
     new_scores.sort(key=lambda d: d[1])
@@ -108,15 +115,13 @@ while not converged:
     new_blocks = []
     new_scores = []
 
-    if differences < size*convergence or iter_count > 500:
+    if differences <= 0 or iter_count > 500:
         break
 
 #old_blocks now contains the final ordering, iterated to convergence
 
-with open("avg_revenue_rank_2.csv", 'w', newline = '') as output:
+with open("avg_revenue_rank_5.csv", 'w', newline = '') as output:
     writer = csv.writer(output)
     writer.writerow(["Block"])
     for item in old_blocks:
         writer.writerow([item])
-
-

@@ -319,3 +319,76 @@ hr{
 .nav:hover{
     cursor: pointer;
 }
+
+/* Legend CSS */
+
+.hidden-legend{
+    background: #222222;
+    position: absolute;
+    top: 25px;
+    left: 285px;
+    transform: rotate(90deg);
+    color: #eeeeee;
+    z-index: 1;
+    height: 30px;
+    vertical-align: text-top;
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+    width: 50px;
+}
+
+.hidden-legend:hover{
+    cursor: pointer;
+}
+
+.hidden-legend p{
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.legend{
+    position: absolute;
+    display: none;
+    background: #222222;
+    left: 299px;
+    top: 15px;
+    background: #222222;
+    border-radius: 0 5px 5px 0;
+    text-align: left;
+    height: 175px;
+    width: 275px;
+    color: #eeeeee;
+    font-size: 14px;
+}
+
+.legend p{
+    display: inline-block;
+}
+
+.circle{
+    display: inline-block;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    background: #28FF00;
+    margin-right: 10px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.opaque.circle{
+    opacity: 0.2;
+    margin-right: 5px;
+}
+
+.red.circle{
+    background: #A60002;
+    margin-right: 5px;
+}
+
+.small.circle{
+    width: 16px;
+    height: 16px;
+    margin-left: 17px;
+    margin-right: 13px;
+}

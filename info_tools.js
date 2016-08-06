@@ -214,4 +214,17 @@ $("document").ready(function(){
         $(event.target).parent().children(".choice[filter='true']").attr("filter", "false");
         $(event.target).attr("filter", "true");
     }
+
+    //Legend show and hide
+    $(".hidden-legend").on("click", function(event){
+        if($(".legend").css("display") == "none"){
+            var distance = parseInt($(".legend").width())
+        }else{
+            var distance = -(parseInt($(".legend").width()))
+        }
+        $(".legend").toggle("slide");
+        $(".hidden-legend").animate({
+            left: "+="+distance
+        });
+    });
 });
