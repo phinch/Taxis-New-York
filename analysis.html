@@ -41,7 +41,7 @@ Although the data provided is relatively robust, my conclusions do make some ass
 
         <br>
 
-        <h2>Part 1: Raw Metrics</h2>
+        <h2>Part 1. Raw Metrics</h2>
         <p>
             The main component of this project is breaking down the data by geography, so that we can identify the best places to be. I divided the data into 12,330 distinct "blocks," where each "block" is 0.005 degrees of latitude and longitude. In the heart of Manhattan, each of these regions is about 6 square blocks. All of my conclusions will be presented in the form of these blocks. 
         </p>
@@ -68,7 +68,7 @@ Although the data provided is relatively robust, my conclusions do make some ass
 
         <br>
 
-        <h2>Part 2: Combining Metrics</h2>
+        <h2>Part 2. Combining Metrics</h2>
         <p>
             To eliminate outliers, I assume that we are only interested in blocks that surpass a certain threshold of rides; I set this lower bound at an average of one ride hailed per minute in the block; this amounts to, across 6 months, 260,640 rides total. Any blocks with a total number of rides below this number, I assumed, don't meet a high enough demand to merit specifically driving there to wait for someone to hail a ride. Only 105 blocks reach this threshold, showing how densely demand is concentrated into certain areas. Reaching this threshold of rides also tempers any extreme outlier rides, yielding a more reliable average. From these blocks that met the threshold, I then re-sorted based on average revenue to obtain the top 25 non-outlier blocks.
         </p>
@@ -78,7 +78,7 @@ Although the data provided is relatively robust, my conclusions do make some ass
 
         <br>
 
-        <h2>Part 3: BlockRank</h2>
+        <h2>Part 3. BlockRank</h2>
         <p>
             The top 25 above is balanced on both high demand and a high average revenue, making it a pretty good indicator of where good rides can be found for taxi drivers. But I would argue that this list is not a complete analysis of how to identify the best places to be picking up passengers, because where passengers are travelling to is just as important as where we're picking them up. If our passenger takes us to a low-demand block, we end up stuck in an area where we can't pick up passengers. The best ride is not only the one with the highest revenue, but also the one that takes us to another high-demand location, so that we can hope to chain together multiple high-demand, high-revenue rides. 
         </p>
@@ -132,7 +132,7 @@ Although the data provided is relatively robust, my conclusions do make some ass
 
         <br>
 
-        <h2>Part 4: Time</h2>
+        <h2>Part 4. Time</h2>
 
         <p>
             We've identified the best 25 blocks, so the final consideration is how to schedule our time in order to be in these 25 blocks at the best possible time. In this section, I assume the rules imposed by New York on its taxi drivers; specifically, drivers can drive up to 12 hours per day, at a maximum of 72 hours per week. I also assume that we will drive for a minimum of 6 hours at a time, and drive at most once a day, to capture a more realistic and sane scheduling of our time.
