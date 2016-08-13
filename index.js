@@ -16,6 +16,28 @@ app.get('/', function(req, res) {
         }
         };
 
+        var fileName = "analysis.html";
+        res.sendFile(fileName, options, function (err) {
+        if (err) {
+          console.log(err);
+          res.status(err.status).end();
+        }
+        else {
+          console.log('Sent:', fileName);
+        }
+    });
+});
+
+app.get('/visualization', function(req, res) {
+    var options = {
+        root: __dirname,
+        dotfiles: 'deny',
+        headers: {
+            'x-timestamp': Date.now(),
+            'x-sent': true
+        }
+        };
+
         var fileName = "taxi_map.html";
         res.sendFile(fileName, options, function (err) {
         if (err) {

@@ -1,6 +1,11 @@
 var combined_metrics;
 var block_rank;
 $(document).on("ready", function(){
+    if($(window).height() > $("#header").height()){
+        $("#header").height($(window).height()-51);
+        $(".image").css("margin-top", ($(window).height()-$(".image").height())/2-25);
+    }
+
     d3.csv("rankings/graph_data.csv", function(error, rows){
         drawScatter("#arev_rides", 'Average Revenue', 'Ride Count', rows)
         drawScatter("#trev_rides", 'Total Revenue', 'Ride Count', rows)
@@ -130,117 +135,3 @@ function drawMap(map, blocks, limit){
         });
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        //get the mins and maxes of each
-        var min_avgrev = Number.POSITIVE_INFINITY, min_totalrev = Number.POSITIVE_INFINITY, min_rides = Number.POSITIVE_INFINITY;
-        var max_avgrev = -1, max_totalrev = -1, max_rides = -1;
-        var count = 0;
-        for(var row in rows){
-            count ++;
-            var info = rows[row];
-            min_avgrev = Math.min(min_avgrev, parseFloat(info['Average Revenue']))
-            min_totalrev = Math.min(min_totalrev, parseFloat(info['Total Revenue']))
-            min_rides = Math.min(min_rides, parseInt(info['Ride Count']))
-            max_avgrev = Math.max(max_avgrev, parseFloat(info['Average Revenue']))
-            max_totalrev = Math.max(max_totalrev, parseFloat(info['Total Revenue']))
-            max_rides = Math.max(max_rides, parseFloat(info['Ride Count']))
-        }
-        console.log(min_avgrev, max_avgrev, min_totalrev, max_totalrev, min_rides, max_rides);
-        var yscale = d3.scale.linear()
-                        .domain([0, count])
-                        .range([height - padding, padding/2])
-
-        var yaxis = d3.svg.axis().orient("left").scale(yscale).tickValues([0, count]);
-
-        var avgrev_xscale = d3.scale.linear()
-                                .domain([min_avgrev, max_avgrev])
-                                .range([padding, width-padding])
-        var avgrev_xaxis = d3.svg.axis().orient("bottom").scale(avgrev_xscale);
-
-        var totalrev_xscale = d3.scale.linear()
-                                .domain([min_totalrev, max_totalrev])
-                                .range([padding, width-padding])
-        var totalrev_xaxis = d3.svg.axis().orient("bottom").scale(totalrev_xscale);
-
-        var rides_xscale = d3.scale.linear()
-                                .domain([min_rides, max_rides])
-                                .range([padding, width-padding])
-        var rides_xaxis = d3.svg.axis().orient("bottom").scale(rides_xscale);
-
-        d3.selectAll(".graph svg").append("g")
-            .attr("class", "yaxis")
-            .attr("transform", "translate("+padding+",0)")
-            .call(yaxis);
-
-        d3.select("#avg_revenue svg").append("g")
-            .attr("class", "xaxis")
-            .attr("transform", "translate(0,"+(height-padding)+")")
-            .call(avgrev_xaxis);
-
-        d3.select("#total_revenue svg").append("g")
-            .attr("class", "xaxis")
-            .attr("transform", "translate(0,"+(height-padding)+")")
-            .call(totalrev_xaxis);
-
-        d3.select("#total_rides svg").append("g")
-            .attr("class", "xaxis")
-            .attr("transform", "translate(0,"+(height-padding)+")")
-            .call(rides_xaxis);
-
-        d3.selectAll(".xaxis text")  // select all the text elements for the xaxis
-            .attr("transform", function(d) {
-                return "translate(" + this.getBBox().height*-2 + "," + (this.getBBox().height+15) + ")rotate(-45)";
-            });
-
-        //Split the domain into 100 equal-sized pieces to partition the data
-        ride_pieces = rides_xscale.ticks(100)
-        arev_pieces = avgrev_xscale.ticks(100)
-        trev_pieces = totalrev_xscale.ticks(100)
-
-        ride_dict = {}
-        arev_dict = {}
-        trev_dict = {}
-        for(var row in rows){
-            var info = rows[row];
-            index = Math.floor(parseFloat(info['Ride Count'])/(max_rides)*100)
-            val = ride_pieces[index]
-            if(val == undefined){continue;}
-            if(val in ride_dict){
-                ride_dict[val] += 1
-            }else{
-                ride_dict[val] = 1
-            }
-
-            index = Math.floor(parseFloat(info['Average Revenue'])/(max_avgrev)*100)
-            val = arev_pieces[index]
-            if(val == undefined){continue;}
-            if(val in arev_dict){
-                arev_dict[val] += 1
-            }else{
-                arev_dict[val] = 1
-            }
-
-            index = Math.floor(parseFloat(info['Total Revenue'])/(max_totalrev)*100)
-            val = trev_pieces[index]
-            if(val == undefined){continue;}
-            if(val in trev_dict){
-                trev_dict[val] += 1
-            }else{
-                trev_dict[val] = 1
-            }
-        }
-
-        console.log(trev_dict)
-*/

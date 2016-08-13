@@ -1,6 +1,87 @@
 body{
     min-width: 1360px;
+    margin: 0;
+    padding: 0;
+    font-family: 'PT Serif', serif;
 }   
+
+#navbar{
+    width: 100%;
+    background: #222222;
+    color: #eeeeee;
+    height: 51px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 3;
+    display: inline-block;
+}
+
+.nav{
+    display: inline-block;
+    font-family: 'Raleway', sans-serif;
+    margin-left: 25px;
+    margin-right: 25px;
+    font-weight: bold;
+}
+
+.viznav{
+    color: #eeeeee;
+    text-decoration: none;
+}
+
+#header{
+    font-size: 0;
+    position: relative;
+    top: 51px;
+    margin-bottom: 50px;
+    height: 460px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #F8C446;
+    text-align: center;
+}
+
+.image{
+    margin-top: 40px;
+}
+
+#content{
+    position: relative;
+    top: 100px;
+    margin-bottom: 50px;
+}
+
+
+.first:first-child:first-letter{
+    float: left;
+    font-size: 90px;
+    line-height: 65px;
+    padding-right: 8px;
+    padding-top: -5px;
+    font-family: 'PT Serif', serif;
+}
+
+#content p, #content h2, #content ol, #content ul{
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#content p:not(:first-child){
+    text-indent: 50px;
+}
+
+#content ul{
+    list-style-type: circle;
+}
+
+#content li{
+    margin-bottom: 5px;
+}
 
 .scatter{
     display: inline-block;
