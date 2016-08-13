@@ -7,18 +7,140 @@
     <meta name="author" content="Philip Hinch"> 
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="taxi_style.css"> 
-    <link rel="stylesheet" href="toolbar_style.css"> 
+    <link rel="stylesheet" href="analysis.css"> 
     <link href='https://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> <!-- jquery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script> <!-- D3.js -->
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> <!-- jquery UI -->
-    <script src="map_by_block.js"></script>
-    <script src="info_tools.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsMLSl5Cdy_cEPbnpNS1zEhkpZPLhf0q4&callback=initMap&libraries=visualization,places" defer></script>
+
+    <script src="analysis.js"></script>
 </head>
 <body>
+    <div id = "header">
+    </div>
+    
+    <p>
+        There are over 50,000 taxis New York City, enough to jam about 200 into each block in Manhattan. Taxis in New York are iconic for their saturation of the streets. But where are their passengers coming from, and where are they going? As a taxi driver, where's the best place to be?
 
+        This project aims to use the mass of data provided by the city of New York about taxi rides to answer this questions. Using the over 77,000,000 rides logged from January-June, 2015, I conducted analysis along multiple metrics in an attempt to put forward a list of the most appealing areas and times for taxi drivers in the city. I will show comparisons between different metrics of analysis, and ultimately propose a Top 25 list of the best places to be as a taxi driver, and the best times to be in those places. I also provide a time-series visualization measuring different metrics across all of New York. In theory, these findings are not only applicable to taxi drivers, but to independent ride-hailing drivers as well, like those for Uber, Lyft, or others. 
 
+        Although the data provided is relatively robust, my conclusions do make some assumptions to account for certain aspects that were not captured by the dataset. Specifically, I assume that the market for taxis is perfectly competitive, well-distributed and that supply equals demand; that is, there are no places where taxi drivers are unable to pick up passengers because there are too many taxis in that place at once, and that there are no places where passengers are unable to hail a ride because there are too few taxis. I also assume that all taxi drivers are hailed and tipped at the same rate. 
+    </p>
+
+    <br>
+
+    <h2>Part 1: Raw Metrics</h2>
+    <p>
+        The main component of this project is breaking down the data by geography, so that we can identify the best places to be. I divided the data into 12,330 distinct "blocks," where each "block" is 0.005 degrees of latitude and longitude. In the heart of Manhattan, each of these regions is about 6 square blocks. All of my conclusions will be presented in the form of these blocks. 
+
+        I identified the most important metrics for taxi drivers to be the amount of revenue (including fare, tax, and tip) per ride, as well as the number of rides in some given timeframe in some given block. As a start, I aggregated the data by block; this allows us to begin identifying interesting and profitable blocks. We can start by looking at graphs mapping out the distribution of the three of these statistics per block.
+    </p>
+
+    <div class = "scatter" id = "arev_rides">
+    </div>
+    <div class = "scatter" id = "trev_rides">
+    </div>
+    <div class = "scatter" id = "arev_trev">
+    </div>
+
+    <p>
+        There exists a strong correlation between total revenue and total number of rides - not a surprise, since each ride generates a positive number of revenue. There seems to be absolutely no correlation, however, between average revenue and total rides, or between average and total revenue. A survey of the data reveals that much of the data is filled with outliers in every direction - most of the distinct blocks recorded have a very low number of rides, which leads to wide variation in average revenue. The most extreme case: one taxi generated over $2000 dollars on one ride, which was the only ride hailed in that block in 6 months - giving that block the largest average by far. Lucky driver! 
+
+        Identifying a block with the largest number of rides would be somewhat useful, since we are really only interested in blocks with a certain threshold of demand. However, it would be better if we could identify high-demand blocks that also generate a relatively high average revenue, since we are interested in generating money, not just getting hailed.
+    </p>
+
+    <br>
+
+    <h2>Part 2: Combining Metrics</h2>
+    <p>
+        To eliminate outliers, I assume that we are only interested in blocks that surpass a certain threshold of rides; I set this lower bound at an average of one ride hailed per minute in the block; this amounts to, across 6 months, 260,640 rides total. Any blocks with a total number of rides below this number, I assumed, don't meet a high enough demand to merit specifically driving there to wait for someone to hail a ride. Only 105 blocks reach this threshold, showing how densely demand is concentrated into certain areas. Reaching this threshold of rides also tempers any extreme outlier rides, yielding a more reliable average. From these blocks that met the threshold, I then re-sorted based on average revenue to obtain the top 25 non-outlier blocks.
+    </p>
+
+    <div class = "map" id = "combined_metrics">
+    </div>
+
+    <br>
+
+    <h2>Part 3: BlockRank</h2>
+    <p>
+        The top 25 above is balanced on both high demand and a high average revenue, making it a pretty good indicator of where good rides can be found for taxi drivers. But I would argue that this list is not a complete analysis of how to identify the best places to be picking up passengers, because where passengers are travelling to is just as important as where we're picking them up. If our passenger takes us to a low-demand block, we end up stuck in an area where we can't pick up passengers. The best ride is not only the one with the highest revenue, but also the one that takes us to another high-demand location, so that we can hope to chain together multiple high-demand, high-revenue rides. 
+
+        The final top 25 list I am proposing was generated by a PageRank-inspired algorithm that iteratively sorts blocks based on their relationships to other blocks until we converge on a completely sorted ranking. The algorithm starts with a randomly sorted list of blocks; in theory, no matter what the initial order, the algorithm guarantees convergence to the same endpoint. Each block is assigned a score based on its current ranking, its total number of rides, and the rankings of each of its destination blocks, weighted by both the distribution of rides to that destination and the destination's average revenue. The highest-ranked blocks after convergence can then be said to have a high demand as well as a relatively high probability of going to destinations that also have a high demand and a high average revenue. The top 25 blocks as generated by this algorithm are shown in the map below. While there is some overlap from the previous map shown, 80% of the blocks displayed here were not displayed in the top 25 based purely on combined metrics.
+    </p>
+
+    <div class = "map" id = "block_rank">
+    </div>
+
+    <p>
+        This is my conclusion of the top 25 blocks to drive in as a taxi driver in New York. Here they are in list form:
+    </p>
+
+    <ol reversed>
+        <li> 40.77 -73.865: LaGuardia </li>
+        <li> 40.78 -73.955: 86th St. </li>
+        <li> 40.745 -73.99: Broadway between 24th and 30th </li>
+        <li> 40.755 -73.985: Bryant Park, Times Square-42 St. Station </li>
+        <li> 40.765 -73.975: 5th Ave. at 59th </li>
+        <li> 40.74 -73.99: Flatiron Building </li>
+        <li> 40.74 -73.985: Gramercy Park, Madison Square Park </li>
+        <li> 40.765 -73.97: 5th Ave. between 59th and 64th </li> 
+        <li> 40.745 -73.98: Lexington Ave. between 29th and 35th </li>
+        <li> 40.755 -73.98: 5th Ave. between 42nd and 48th </li>
+        <li> 40.735 -73.99: Union Square </li>
+        <li> 40.76 -73.98: 30 Rock, Radio City Music Hall, MoMA, The Halal Guys </li>
+        <li> 40.74 -74.005: Chelsea Market </li>
+        <li> 40.76 -73.975: MoMA, St. Patrick's Cathedral, 5th Ave between 51st and 56th </li>
+        <li> 40.755 -73.97: 3rd Ave between 47th and 53rd </li>
+        <li> 40.75 -73.98: Park Ave between 35th and 41st </li>
+        <li> 40.745 -73.985: Madison Ave between 26th and 32nd </li>
+        <li> 40.75 -73.995: Madison Square Garden, Penn Station (West entrance) </li>
+        <li> 40.755 -73.99: Port Authority Bus Terminal </li>
+        <li> 40.76 -73.97: Lexington Ave. between 53rd and 59th </li>
+        <li> 40.755 -73.975: Grand Central </li>
+        <li> 40.75 -73.975: Chrysler Building </li>
+        <li> 40.765 -73.98: Carnegie Hall </li>
+        <li> 40.76 -73.985: Times Square </li>
+        <li> 40.75 -73.99: Madison Square Garden, Penn Station (East entrance) </li>
+    </ol>
+
+    <br>
+
+    <p>
+        The clearest conclusion to be drawn from these results is that transportation hubs are clearly good choices: both train terminals, the bus terminal, and one airport are listed in the top 25 here. Another trend seems to be major concert venues: Madison Square Garden, Radio City, Carnegie Hall, and portions of Broadway all made the list, while the only major museum that appeared was MoMA (not the Guggenheim or the Met). Finally, classical tourist attractions also scored highly, with Times Square, 30 Rock, and Chelsea Market leading the way. Those blocks listed without major landmarks mostly contained shopping hubs or a large number of hotels. 
+
+        The most noticeable difference between these blocks and those of the previous list is that JFK Airport was completely knocked off the list, and LaGuardia barely made it into the top 25. This implies that, although the airports have a huge demand for taxis, with a high average revenue, their destinations are varied and could be anywhere in the city, and this spread makes them less desirable when considering how to string together high-revenue rides. There was also a large shift out of the financial district in Lower Manhattan and into the more tourism-driven Midtown; again, implying that it may be tourists or shoppers, rather than daily commuters, who are the most desirable customer for a taxi driver.
+    </p>
+
+    <br>
+
+    <h2>Part 4: Time</h2>
+
+    <p>
+        We've identified the best 25 blocks, so the final consideration is how to schedule our time in order to be in these 25 blocks at the best possible time. In this section, I assume the rules imposed by New York on its taxi drivers; specifically, drivers can drive up to 12 hours per day, at a maximum of 72 hours per week. I also assume that we will drive for a minimum of 6 hours at a time, and drive at most once a day, to capture a more realistic and sane scheduling of our time.
+
+        I gathered more comprehensive data on these top 25 blocks, splitting their data further into the 168 hours of the week and ranked each hour based on revenue as well as how strong the connection was to other blocks that received high scores in BlockRank. Ideally, we could just drive in the best 72 hours of each week, but that's not very realistic scheduling; instead, I identified the best 6 12-hour blocks across the week (keeping in mind that drivers are capped at driving for 12 hours per day). Here's the list of 72 hours, ranked from best to worst by day: 
+    </p>
+
+    <ul>
+        <li>Thursday: 12pm - 12am</li>
+        <li>Wednesday: 11am - 11pm</li>
+        <li>Tuesday: 11am - 11pm</li>
+        <li>Friday: 12pm - 12am</li>
+        <li>Monday: 11am - 11pm</li>
+        <li>Saturday: 1pm - 1am Sunday</li>
+    </ul>
+
+    <p>
+        We can thus conclude that these times are the best times to drive as a taxi driver in New York. Moreover, as a general strategy, we should always aim to be in the top 25 blocks identified in BlockRank; we are then relatively likely to pick up passengers who are travelling to other high-ranked blocks.
+    </p>
+
+    <br>
+
+    <h2>Conclusion</h2>
+
+    <p>
+        This project presents one analysis of how to maximize profits as a taxi driver in New York. Although I made some assumptions along the way, and although different conclusions could be reached from the dataset, I am confident in saying that my analysis of the data provides a strong list of blocks that are high-demand and high-profit places driving a taxi. 
+    </p>
 </body>

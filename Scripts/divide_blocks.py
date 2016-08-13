@@ -33,7 +33,7 @@ count = 0
 
 all_blocks = {}
 
-#Change this to vary the size of the "block." size=1 is approx. 1 sq. block (slightly larger)
+#Change this to vary the size of the "block." size=1 is approx. 1 sq. block
 size = 5
 
 def getBlock(lat, lng):
