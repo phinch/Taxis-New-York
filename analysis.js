@@ -6,17 +6,17 @@ $(document).on("ready", function(){
         $(".image").css("margin-top", ($(window).height()-$(".image").height())/2-25);
     }
 
-    d3.csv("rankings/graph_data.csv", function(error, rows){
+    d3.csv("Rankings/graph_data.csv", function(error, rows){
         drawScatter("#arev_rides", 'Average Revenue', 'Ride Count', rows)
         drawScatter("#trev_rides", 'Total Revenue', 'Ride Count', rows)
         drawScatter("#arev_trev", 'Average Revenue', 'Total Revenue', rows)
     });
 
-    d3.csv("rankings/combined_metrics.csv", function(error, blocks){
+    d3.csv("Rankings/combined_metrics.csv", function(error, blocks){
         drawMap(combined_metrics, blocks, 25);
     });
 
-    d3.csv("rankings/Top_25.csv", function(error, blocks){
+    d3.csv("Rankings/Top_25.csv", function(error, blocks){
         drawMap(block_rank, blocks, 25);
     });
 });

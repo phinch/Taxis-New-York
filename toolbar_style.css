@@ -316,8 +316,9 @@ hr{
     bottom: 10px;
 }
 
-.nav:hover{
-    cursor: pointer;
+.nav a{
+    text-decoration: none;
+    color: #eeeeee;
 }
 
 /* Legend CSS */
